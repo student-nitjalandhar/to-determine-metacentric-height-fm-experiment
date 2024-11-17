@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Lab - Metacentric Height Experiment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color:lightblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+        #ship-container {
+            position: relative;
+            width: 400px;
+            height: 200px;
+            margin: 20px auto;
+            background-color: ;
+            
+            border-radius: 10px;
+        }
+        #ship {
+            width: 350px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            transform: translate(-50%, -50%) rotate(0deg);
+            transition: transform 0.5s;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        .controls input,
+        .controls button {
+            margin: 5px;
+            padding: 10px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Metacentric Height Experiment</h1>
+        <div id="ship-container">
+            <img id="ship" src="ship.png" alt="Ship Model">
+        </div>
+        <div class="controls">
+            <label for="bodyWeight">Weight of Body (kg): </label>
+            <input type="number" id="bodyWeight" value="0" step="0.1"><br>
+            <label for="partWeight">Weight of Small Part (kg): </label>
+            <input type="number" id="partWeight" value="0" step="0.1"><br>
+            <label for="distance">Horizontal Distance of Small Part (cm): </label>
+            <input type="number" id="distance" value="0" step="0.1"><br>
+            <label for="angle">Angle Formed After Tilting (°): </label>
+            <input type="number" id="angle" value="0" min="0" max="30" step="1"><br>
+            <button onclick="simulate()">Simulate</button>
+        </div>
+        <div id="output">Metacentric Height: 0.00 cm</div>
+    </div>
+
+    <script>
+        function calculateMetacentricHeight(bodyWeight, partWeight, distance, angle) {
+            // Convert distance from cm to m
+            const distanceInMeters = distance / 100; // Convert cm to meters
+            const totalWeight = bodyWeight + partWeight; // Total weight in kg
+            const moment = partWeight * distanceInMeters; // Moment in kg*m (horizontal distance considered)
+            const angleRad = angle * (Math.PI / 180); // Convert angle to radians
+
+            // Calculate metacentric height (in meters) using simplified physics formula
+            const metacentricHeight = moment / (totalWeight * Math.sin(angleRad));
+            
+            // Convert metacentric height to cm
+            return metacentricHeight * 100;
+        }
+
+        function simulate() {
+            // Get inputs from user
+            const bodyWeight = parseFloat(document.getElementById("bodyWeight").value);
+            const partWeight = parseFloat(document.getElementById("partWeight").value);
+            const distance = parseFloat(document.getElementById("distance").value);
+            const angle = parseFloat(document.getElementById("angle").value);
+            const ship = document.getElementById("ship");
+
+            // Calculate metacentric height
+            const metacentricHeight = calculateMetacentricHeight(bodyWeight, partWeight, distance, angle);
+
+            // Rotate the ship according to the angle
+            ship.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+
+            // Display the metacentric height
+            document.getElementById("output").textContent = `Metacentric Height: ${metacentricHeight.toFixed(2)} cm`;
+        }
+    </script>
+</body>
+</html>
